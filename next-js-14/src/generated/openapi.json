@@ -1,0 +1,368 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Swagger Petstore",
+    "description": "This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "apiteam@swagger.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.11"
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "servers": [
+    {
+      "url": "https://petstore3.swagger.io/api/v3"
+    }
+  ],
+  "tags": [
+    {
+      "name": "pet",
+      "description": "Everything about your Pets",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    }
+  ],
+  "paths": {
+    "/pet": {
+      "post": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Add a new pet to the store",
+        "description": "Add a new pet to the store",
+        "operationId": "addPet",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/NewPetRequest"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/PetResponse"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "422": {
+            "description": "Validation exception"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/pet/{petId}": {
+      "get": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Find pet by ID",
+        "description": "Returns a single pet",
+        "operationId": "getPetById",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ParamPetId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/PetResponse"
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Pet not found"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          },
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Updates a pet in the store with form data",
+        "description": "",
+        "operationId": "updatePetWithForm",
+        "parameters": [
+          {
+            "name": "petId",
+            "in": "path",
+            "description": "ID of pet that needs to be updated",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Name of pet that needs to be updated",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Status of pet that needs to be updated",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Deletes a pet",
+        "description": "delete a pet",
+        "operationId": "deletePet",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ParamApiKey"
+          },
+          {
+            "$ref": "#/components/parameters/ParamPetId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid pet value"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "ParamApiKey": {
+        "name": "api_key",
+        "in": "header",
+        "description": "API key",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "ParamPetId": {
+        "name": "petId",
+        "in": "path",
+        "description": "ID of pet to return",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/IdType"
+        }
+      }
+    },
+    "requestBodies": {
+      "NewPetRequest": {
+        "description": "Pet object that needs to be added to the store",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/NewPet"
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "PetResponse": {
+        "description": "Successful operation",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Pet"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Category": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/IdType"
+          },
+          "name": {
+            "type": "string",
+            "example": "Dogs"
+          }
+        }
+      },
+      "BasePet": {
+        "type": "object",
+        "required": [
+          "name",
+          "categoryId",
+          "photoUrls",
+          "status"
+        ],
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/PetNameType"
+          },
+          "categoryId": {
+            "$ref": "#/components/schemas/IdType"
+          },
+          "photoUrls": {
+            "$ref": "#/components/schemas/UrlListType"
+          },
+          "status": {
+            "$ref": "#/components/schemas/PetStatusEnum"
+          }
+        }
+      },
+      "NewPet": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BasePet"
+          }
+        ]
+      },
+      "Pet": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BasePet"
+          },
+          {
+            "$ref": "#/components/schemas/ObjectWithId"
+          }
+        ]
+      },
+      "ObjectWithId": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/IdType"
+          }
+        }
+      },
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "IdType": {
+        "type": "integer",
+        "format": "int64",
+        "nullable": false,
+        "description": "Unique identifier",
+        "example": 1
+      },
+      "PetNameType": {
+        "type": "string",
+        "example": "doggie",
+        "nullable": false,
+        "minLength": 1,
+        "maxLength": 50
+      },
+      "PetStatusEnum": {
+        "type": "string",
+        "description": "pet status in the store",
+        "enum": [
+          "available",
+          "pending",
+          "sold"
+        ]
+      },
+      "UrlListType": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/UrlType"
+        }
+      },
+      "UrlType": {
+        "type": "string",
+        "format": "url",
+        "nullable": false
+      }
+    },
+    "securitySchemes": {
+      "petstore_auth": {
+        "type": "oauth2",
+        "flows": {
+          "implicit": {
+            "authorizationUrl": "https://petstore3.swagger.io/oauth/authorize",
+            "scopes": {
+              "write:pets": "modify pets in your account",
+              "read:pets": "read your pets"
+            }
+          }
+        }
+      },
+      "api_key": {
+        "type": "apiKey",
+        "name": "api_key",
+        "in": "header"
+      }
+    }
+  }
+}
